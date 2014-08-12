@@ -23,24 +23,27 @@ namespace CalculateInterestConsole
                                                                         , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate, @nonVNDInterestRate, a.AZRolloverPR, 0, 0
                                                                     FROM  BSAVING_ACC_ARREAR a
                                                                     LEFT JOIN [BSAVING_ACC_INTEREST] i
-	                                                                    ON a.RefId = i.RefId AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
-                                                                    WHERE Status = 'AUT' AND (CloseStatus is null OR CloseStatus != 'AUT') AND i.RefId is null";
+	                                                                    ON a.RefId = i.RefId  AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
+                                                                    WHERE Status = 'AUT' AND (CloseStatus is null OR CloseStatus != 'AUT') 
+                                                                            AND i.RefId is null AND a.AZPreMaturityDate is not NULL AND a.AZMaturityDate is not NULL";
 
         private static readonly string PREPARE_DATA_FOR_PERIODIC = @"INSERT INTO [BSAVING_ACC_INTEREST]([RefId], [SavingAccType], [CustomerId], [CustomerName], [Currency], [Principal]
 	                                                                    , [StartDate], [EndDate], [InterestRate], [NonInterestRate], [AZRolloverPR], TermInterestAmt, NonTermInterestAmt)
                                                                     SELECT a.RefId, 'PERIODIC', a.CustomerId, a.CustomerName, a.Currency
-                                                                        ,  a.AZPrincipal + +  ISNULL((SELECT SUM(ISNULL(TermInterestAmt,0)) FROM BSAVING_ACC_INTEREST WHERE RefId = a.RefId),0) as AZPrincipal
+                                                                        ,  a.AZPrincipal +  ISNULL((SELECT SUM(ISNULL(TermInterestAmt,0)) FROM BSAVING_ACC_INTEREST WHERE RefId = a.RefId),0) as AZPrincipal
                                                                         , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate, @nonVNDInterestRate, '1', 0, 0
                                                                     FROM  BSAVING_ACC_PERIODIC a
                                                                     LEFT JOIN [BSAVING_ACC_INTEREST] i
-	                                                                    ON a.RefId = i.RefId AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
-                                                                    WHERE Status = 'AUT' AND (CloseStatus is null OR CloseStatus != 'AUT') AND i.RefId is null";
+	                                                                    ON a.RefId = i.RefId  AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
+                                                                    WHERE Status = 'AUT' AND (CloseStatus is null OR CloseStatus != 'AUT') AND i.RefId is null AND a.AZPreMaturityDate is not NULL AND a.AZMaturityDate is not NULL";
 
         public static DateTime SystemDate
         {
             get
             {
-                return new DateTime(2014,8,21);//DateTime.Now.AddDays(3);
+                return DateTime.Now;
+                //return new DateTime(2015, 2, 12).AddDays(1);
+                //return DateTime.Now.AddDays(2);
             }
         }
         static void Main(string[] args)
@@ -97,16 +100,16 @@ namespace CalculateInterestConsole
                             adapter.Fill(savingAccInterestTb);
 
                             foreach (DataRow row in savingAccInterestTb.Rows)
-                            {
-                                decimal nonTermInterestAmt = row["NonTermInterestAmt"] == DBNull.Value ? 0 : (decimal)row["NonTermInterestAmt"];
-                                var principal = (decimal)row["Principal"] + nonTermInterestAmt;
+                            {                                
+                                //decimal nonTermInterestAmt = row["NonTermInterestAmt"] == DBNull.Value ? 0 : (decimal)row["NonTermInterestAmt"];
+                                var principal = (decimal)row["Principal"]; // +nonTermInterestAmt;
                                 decimal interestAmt = 0;
 
                                 if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) == 0)
                                 {
                                     //Trung ngay dao han
-                                    interestAmt = (decimal)row["InterestRate"] / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], (DateTime)row["EndDate"]) * principal;
-                                    row["TermInterestAmt"] = (decimal)row["TermInterestAmt"] + interestAmt;
+                                    interestAmt = (decimal)row["InterestRate"] / 100 / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], (DateTime)row["EndDate"]) * principal;
+                                    row["TermInterestAmt"] = interestAmt;
                                     row["NonTermInterestAmt"] = 0;
                                     row["LastCalcInterstDate"] = SystemDate;
 
@@ -114,10 +117,10 @@ namespace CalculateInterestConsole
                                 }
                                 else if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) > 0)
                                 {
-                                    interestAmt = (decimal)row["NonInterestRate"] / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], SystemDate) * principal;
-                                    row["NonTermInterestAmt"] = (decimal)row["NonTermInterestAmt"] + interestAmt;
+                                    interestAmt = (decimal)row["NonInterestRate"] / 100 / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], SystemDate) * principal;
+                                    row["NonTermInterestAmt"] = interestAmt;
                                     row["LastCalcInterstDate"] = SystemDate;
-                                }
+                                }                                
                             }
 
                             var commandBuilder = new SqlCommandBuilder(adapter);
