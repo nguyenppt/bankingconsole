@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateInterestConsole", "CalculateInterestConsole.csproj", "{35FA3184-301D-49EA-8599-64A074AB1449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateOpenAccountInterestConsole", "CalculateOpenAccountInterestConsole\CalculateOpenAccountInterestConsole.csproj", "{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +15,10 @@ Global
 		{35FA3184-301D-49EA-8599-64A074AB1449}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35FA3184-301D-49EA-8599-64A074AB1449}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35FA3184-301D-49EA-8599-64A074AB1449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

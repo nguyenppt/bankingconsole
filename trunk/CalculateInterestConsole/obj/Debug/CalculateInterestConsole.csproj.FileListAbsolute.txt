@@ -1,0 +1,6 @@
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\bin\Debug\CalculateInterestConsole.exe.config
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\bin\Debug\CalculateInterestConsole.exe
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\bin\Debug\CalculateInterestConsole.pdb
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\obj\Debug\CalculateInterestConsole.csprojResolveAssemblyReference.cache
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\obj\Debug\CalculateInterestConsole.exe
+E:\Working\CoreBanking\BankingConsole\CalculateInterestConsole\obj\Debug\CalculateInterestConsole.pdb
