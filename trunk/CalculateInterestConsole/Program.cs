@@ -13,14 +13,18 @@ namespace CalculateInterestConsole
 {
     class Program
     {
-        private static decimal _nonVNDInterestRate = 0;
         private static readonly string _connectionString = ConfigurationManager.ConnectionStrings["defaultDB"].ConnectionString;
 
         private static readonly string PREPARE_DATA_FOR_ARREAR = @"INSERT INTO [BSAVING_ACC_INTEREST]([RefId], [SavingAccType], [CustomerId], [CustomerName], [Currency], [Principal]
 	                                                                    , [StartDate], [EndDate], [InterestRate], [NonInterestRate], [AZRolloverPR], TermInterestAmt, NonTermInterestAmt)
                                                                     SELECT a.RefId, 'AREAR', a.CustomerId, a.CustomerName, a.Currency
                                                                         ,  a.AZPrincipal +  ISNULL((SELECT SUM(ISNULL(TermInterestAmt,0)) FROM BSAVING_ACC_INTEREST WHERE RefId = a.RefId),0) as AZPrincipal
-                                                                        , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate, @nonVNDInterestRate, a.AZRolloverPR, 0, 0
+                                                                        , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate
+                                                                        , (SELECT CASE a.Currency 
+		                                                                            WHEN 'VND' THEN VND  
+		                                                                            WHEN 'USD' THEN USD
+		                                                                            ELSE EUR END FROM BINTEREST_RATE WHERE Term = 'NON') as NonVNDInterestRate
+                                                                        , a.AZRolloverPR, 0, 0
                                                                     FROM  BSAVING_ACC_ARREAR a
                                                                     LEFT JOIN [BSAVING_ACC_INTEREST] i
 	                                                                    ON a.RefId = i.RefId  AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
@@ -31,7 +35,12 @@ namespace CalculateInterestConsole
 	                                                                    , [StartDate], [EndDate], [InterestRate], [NonInterestRate], [AZRolloverPR], TermInterestAmt, NonTermInterestAmt)
                                                                     SELECT a.RefId, 'PERIODIC', a.CustomerId, a.CustomerName, a.Currency
                                                                         ,  a.AZPrincipal +  ISNULL((SELECT SUM(ISNULL(TermInterestAmt,0)) FROM BSAVING_ACC_INTEREST WHERE RefId = a.RefId),0) as AZPrincipal
-                                                                        , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate, @nonVNDInterestRate, '1', 0, 0
+                                                                        , a.AZPreMaturityDate, a.AZMaturityDate, a.AZInterestRate
+                                                                        , (SELECT CASE a.Currency 
+		                                                                        WHEN 'VND' THEN VND  
+		                                                                        WHEN 'USD' THEN USD
+		                                                                        ELSE EUR END FROM BINTEREST_RATE WHERE Term = 'NON') as NonVNDInterestRate
+                                                                        , '1', 0, 0
                                                                     FROM  BSAVING_ACC_PERIODIC a
                                                                     LEFT JOIN [BSAVING_ACC_INTEREST] i
 	                                                                    ON a.RefId = i.RefId  AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
@@ -39,50 +48,77 @@ namespace CalculateInterestConsole
 
         public static DateTime SystemDate
         {
-            get
-            {
-                return DateTime.Now;
-                //return new DateTime(2015, 2, 12).AddDays(1);
-                //return DateTime.Now.AddDays(2);
-            }
+            get;
+            private set;
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Get non term interest.");
-            GetNonInterestRate();
-            Console.WriteLine("Prepare data for arrear");
-            PrepareDataForArrear();
-            Console.WriteLine("Prepare data for arrear");
-            PrepareDataForPeriodic();
-            Console.WriteLine("Calculate daily interest");
-            CalculateInterest();            
+            string exit = "N";
+            do
+            {
+                try
+                {
+                    if (args.Length == 0 || args[0] == "manual")
+                    {
+                        Console.Write("Day:");
+                        int day = int.Parse(Console.ReadLine());
+                        Console.Write("Month:");
+                        int month = int.Parse(Console.ReadLine());                        
+                        Console.Write("Year:");
+                        int year = int.Parse(Console.ReadLine());
+
+                        SystemDate = new DateTime(year, month, day);
+                    }
+                    else
+                    {
+                        SystemDate = DateTime.Now;
+                    }
+
+                    //Console.WriteLine("Get non term interest.");
+                    //GetNonInterestRate();
+                    Console.WriteLine("Prepare data for arrear");
+                    PrepareDataForArrear();
+                    Console.WriteLine("Prepare data for arrear");
+                    PrepareDataForPeriodic();
+                    Console.WriteLine("Calculate daily interest");
+                    CalculateInterest();            
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }                
+
+                Console.Write("Do you want to quit (Y/N)?");
+                exit = Console.ReadLine();
+            }
+            while (exit.ToUpper() != "Y");                       
         }
 
-        private static void GetNonInterestRate()
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                using (var command = new SqlCommand(@"SELECT VND FROM BINTEREST_RATE WHERE TERM ='NON'", conn))
-                {
-                    var result = command.ExecuteScalar();
-                    if (result != null)
-                    {
-                        _nonVNDInterestRate = (decimal)result;
-                    }
-                }
-            }
-        }
+        //private static void GetNonInterestRate()
+        //{
+        //    using (var conn = new SqlConnection(_connectionString))
+        //    {
+        //        conn.Open();
+        //        using (var command = new SqlCommand(@"SELECT VND FROM BINTEREST_RATE WHERE TERM ='NON'", conn))
+        //        {
+        //            var result = command.ExecuteScalar();
+        //            if (result != null)
+        //            {
+        //                _nonVNDInterestRate = (decimal)result;
+        //            }
+        //        }
+        //    }
+        //}
 
         private static void CalculateInterest()
         {
             var option = new TransactionOptions
             {
-                IsolationLevel= System.Transactions.IsolationLevel.ReadCommitted
+                IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted
             };
             using (var scope = new TransactionScope(TransactionScopeOption.Required, option))
             {
-                var savingAccInterestTb = new DataTable();                
+                var savingAccInterestTb = new DataTable();
                 using (var conn = new SqlConnection(_connectionString))
                 {
                     conn.Open();
@@ -100,12 +136,16 @@ namespace CalculateInterestConsole
                             adapter.Fill(savingAccInterestTb);
 
                             foreach (DataRow row in savingAccInterestTb.Rows)
-                            {                                
+                            {
+                                if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["StartDate"]) > 0)
+                                {
+                                    continue;
+                                }
                                 //decimal nonTermInterestAmt = row["NonTermInterestAmt"] == DBNull.Value ? 0 : (decimal)row["NonTermInterestAmt"];
                                 var principal = (decimal)row["Principal"]; // +nonTermInterestAmt;
                                 decimal interestAmt = 0;
 
-                                if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) == 0)
+                                if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) <= 0)
                                 {
                                     //Trung ngay dao han
                                     interestAmt = (decimal)row["InterestRate"] / 100 / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], (DateTime)row["EndDate"]) * principal;
@@ -120,7 +160,7 @@ namespace CalculateInterestConsole
                                     interestAmt = (decimal)row["NonInterestRate"] / 100 / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], SystemDate) * principal;
                                     row["NonTermInterestAmt"] = interestAmt;
                                     row["LastCalcInterstDate"] = SystemDate;
-                                }                                
+                                }
                             }
 
                             var commandBuilder = new SqlCommandBuilder(adapter);
@@ -129,7 +169,7 @@ namespace CalculateInterestConsole
                     }
                 }
                 scope.Complete();
-            }                                    
+            }
         }
 
         private static void UpdateMaturityDate(string refId, string savingAccType, SqlConnection connection)
@@ -155,13 +195,13 @@ namespace CalculateInterestConsole
                     var term = (string)resultTb.Rows[0]["AZTerm"];
                     var preMaturityDate = (DateTime)resultTb.Rows[0]["AZMaturityDate"];
                     DateTime maturityDate;
-                    if (term.Substring(term.Length -1, 1).ToUpper() == "D")
+                    if (term.Substring(term.Length - 1, 1).ToUpper() == "D")
                     {
-                        maturityDate = preMaturityDate.AddDays(Convert.ToInt32(term.Substring(0,term.Length - 1)));
+                        maturityDate = preMaturityDate.AddDays(Convert.ToInt32(term.Substring(0, term.Length - 1)));
                     }
                     else
                     {
-                        maturityDate = preMaturityDate.AddMonths(Convert.ToInt32(term.Substring(0,term.Length - 1)));
+                        maturityDate = preMaturityDate.AddMonths(Convert.ToInt32(term.Substring(0, term.Length - 1)));
                     }
                     using (var command = new SqlCommand())
                     {
@@ -172,16 +212,16 @@ namespace CalculateInterestConsole
                         switch (savingAccType.ToUpper())
                         {
                             case "AREAR":
-                                command.CommandText = "UPDATE BSAVING_ACC_ARREAR SET AZPreMaturityDate = @AZPreMaturityDate, AZMaturityDate = @AZMaturityDate WHERE RefId = @RefId";                               
+                                command.CommandText = "UPDATE BSAVING_ACC_ARREAR SET AZPreMaturityDate = @AZPreMaturityDate, AZMaturityDate = @AZMaturityDate WHERE RefId = @RefId";
                                 command.ExecuteNonQuery();
                                 break;
                             case "PERIODIC":
-                                command.CommandText = "UPDATE BSAVING_ACC_PERIODIC SET AZPreMaturityDate = @AZPreMaturityDate, AZMaturityDate = @AZMaturityDate WHERE RefId = @RefId";                               
+                                command.CommandText = "UPDATE BSAVING_ACC_PERIODIC SET AZPreMaturityDate = @AZPreMaturityDate, AZMaturityDate = @AZMaturityDate WHERE RefId = @RefId";
                                 command.ExecuteNonQuery();
                                 break;
                         }
                     }
-                }                
+                }
             }
         }
 
@@ -192,8 +232,8 @@ namespace CalculateInterestConsole
                 conn.Open();
                 using (var command = new SqlCommand(PREPARE_DATA_FOR_ARREAR, conn))
                 {
-                    command.Parameters.AddWithValue("@nonVNDInterestRate", _nonVNDInterestRate);
-                    command.ExecuteNonQuery();                    
+                    //command.Parameters.AddWithValue("@nonVNDInterestRate", _nonVNDInterestRate);
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -205,7 +245,7 @@ namespace CalculateInterestConsole
                 conn.Open();
                 using (var command = new SqlCommand(PREPARE_DATA_FOR_PERIODIC, conn))
                 {
-                    command.Parameters.AddWithValue("@nonVNDInterestRate", _nonVNDInterestRate);
+                    //command.Parameters.AddWithValue("@nonVNDInterestRate", _nonVNDInterestRate);
                     command.ExecuteNonQuery();
                 }
             }
