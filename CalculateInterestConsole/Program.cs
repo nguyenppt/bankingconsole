@@ -52,46 +52,66 @@ namespace CalculateInterestConsole
             private set;
         }
         static void Main(string[] args)
-        {
-            string exit = "N";
-            do
+        {            
+            if (args[0] == "schedule")
+            {
+                SystemDate = DateTime.Now;
+                Process();
+            }
+            else if (args[0] == "input")
             {
                 try
+                {                    
+                    SystemDate = new DateTime(int.Parse(args[1]), int.Parse(args[2]), int.Parse(args[3]));
+                    Console.WriteLine(SystemDate.ToShortDateString());
+                    Process();
+                }
+                catch (Exception ex)
                 {
-                    if (args.Length == 0 || args[0] == "manual")
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }                
+            }
+            else if (args[0] == "manual")
+            {
+                string exit = "N";
+                do
+                {
+                    try
                     {
                         Console.Write("Day:");
                         int day = int.Parse(Console.ReadLine());
                         Console.Write("Month:");
-                        int month = int.Parse(Console.ReadLine());                        
+                        int month = int.Parse(Console.ReadLine());
                         Console.Write("Year:");
                         int year = int.Parse(Console.ReadLine());
 
                         SystemDate = new DateTime(year, month, day);
+
+                        Process();
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        SystemDate = DateTime.Now;
+                        Console.WriteLine(ex.Message);
                     }
 
-                    //Console.WriteLine("Get non term interest.");
-                    //GetNonInterestRate();
-                    Console.WriteLine("Prepare data for arrear");
-                    PrepareDataForArrear();
-                    Console.WriteLine("Prepare data for arrear");
-                    PrepareDataForPeriodic();
-                    Console.WriteLine("Calculate daily interest");
-                    CalculateInterest();            
+                    Console.Write("Do you want to quit (Y/N)?");
+                    exit = Console.ReadLine();
                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }                
-
-                Console.Write("Do you want to quit (Y/N)?");
-                exit = Console.ReadLine();
+                while (exit.ToUpper() != "Y");
             }
-            while (exit.ToUpper() != "Y");                       
+        }
+
+        private static void Process()
+        {
+            //Console.WriteLine("Get non term interest.");
+            //GetNonInterestRate();
+            Console.WriteLine("Prepare data for arrear");
+            PrepareDataForArrear();
+            Console.WriteLine("Prepare data for arrear");
+            PrepareDataForPeriodic();
+            Console.WriteLine("Calculate daily interest");
+            CalculateInterest();
         }
 
         //private static void GetNonInterestRate()
