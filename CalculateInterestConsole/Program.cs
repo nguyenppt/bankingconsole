@@ -13,6 +13,8 @@ namespace CalculateInterestConsole
 {
     class Program
     {
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private static readonly string _connectionString = ConfigurationManager.ConnectionStrings["defaultDB"].ConnectionString;
 
         private static readonly string PREPARE_DATA_FOR_ARREAR = @"INSERT INTO [BSAVING_ACC_INTEREST]([RefId], [SavingAccType], [CustomerId], [CustomerName], [Currency], [Principal]
@@ -52,7 +54,9 @@ namespace CalculateInterestConsole
             private set;
         }
         static void Main(string[] args)
-        {            
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            _logger.Info(string.Format("- Start calculate interest at {0} with mode {1}", DateTime.Now.ToLongDateString(), args[0]));            
             if (args[0] == "schedule")
             {
                 SystemDate = DateTime.Now;
@@ -68,6 +72,7 @@ namespace CalculateInterestConsole
                 }
                 catch (Exception ex)
                 {
+                    _logger.Error(ex.Message, ex);
                     Console.WriteLine(ex.Message);
                     Console.Read();
                 }                
@@ -92,6 +97,7 @@ namespace CalculateInterestConsole
                     }
                     catch (Exception ex)
                     {
+                        _logger.Error(ex.Message, ex);
                         Console.WriteLine(ex.Message);
                     }
 
@@ -100,6 +106,14 @@ namespace CalculateInterestConsole
                 }
                 while (exit.ToUpper() != "Y");
             }
+
+            _logger.Info("Completed !");
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;
+            _logger.Error(ex.Message, ex);
         }
 
         private static void Process()
