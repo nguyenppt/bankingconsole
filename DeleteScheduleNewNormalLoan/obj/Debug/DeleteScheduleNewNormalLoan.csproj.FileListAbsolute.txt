@@ -1,0 +1,7 @@
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\bin\Debug\DeleteScheduleNewNormalLoan.exe.config
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\obj\Debug\DeleteScheduleNewNormalLoan.csprojResolveAssemblyReference.cache
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\bin\Debug\DeleteScheduleNewNormalLoan.exe
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\bin\Debug\DeleteScheduleNewNormalLoan.pdb
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\bin\Debug\Microsoft.ApplicationBlocks.Data.dll
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\obj\Debug\DeleteScheduleNewNormalLoan.exe
+E:\Working\CoreBanking\BankingConsole\DeleteScheduleNewNormalLoan\obj\Debug\DeleteScheduleNewNormalLoan.pdb

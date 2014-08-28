@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateInterestConsole", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateOpenAccountInterestConsole", "CalculateOpenAccountInterestConsole\CalculateOpenAccountInterestConsole.csproj", "{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeleteScheduleNewNormalLoan", "..\DeleteScheduleNewNormalLoan\DeleteScheduleNewNormalLoan.csproj", "{9715F2BD-04E4-4376-933C-63F2B87F55EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F1A10A1-6B4B-4B2D-A1F0-5D9164A07C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9715F2BD-04E4-4376-933C-63F2B87F55EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9715F2BD-04E4-4376-933C-63F2B87F55EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9715F2BD-04E4-4376-933C-63F2B87F55EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9715F2BD-04E4-4376-933C-63F2B87F55EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
