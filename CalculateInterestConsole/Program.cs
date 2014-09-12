@@ -69,12 +69,14 @@ namespace CalculateInterestConsole
                     SystemDate = new DateTime(int.Parse(args[1]), int.Parse(args[2]), int.Parse(args[3]));
                     Console.WriteLine(SystemDate.ToShortDateString());
                     Process();
+                    Environment.ExitCode = 0;
                 }
                 catch (Exception ex)
                 {
+                    Environment.ExitCode = 1;
                     _logger.Error(ex.Message, ex);
-                    Console.WriteLine(ex.Message);
-                    Console.Read();
+                    //Console.WriteLine(ex.Message);
+                    //Console.Read();
                 }                
             }
             else if (args[0] == "manual")
