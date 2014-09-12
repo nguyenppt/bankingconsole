@@ -56,7 +56,7 @@ namespace CalculateInterestConsole
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            _logger.Info(string.Format("- Start calculate interest at {0} with mode {1}", DateTime.Now.ToLongDateString(), args[0]));            
+            _logger.Info(string.Format("- Start calculate interest at {0} with mode {1}", DateTime.Now.ToLongDateString(), args[0]));
             if (args[0] == "schedule")
             {
                 SystemDate = DateTime.Now;
@@ -65,19 +65,17 @@ namespace CalculateInterestConsole
             else if (args[0] == "input")
             {
                 try
-                {                    
+                {
                     SystemDate = new DateTime(int.Parse(args[1]), int.Parse(args[2]), int.Parse(args[3]));
                     Console.WriteLine(SystemDate.ToShortDateString());
                     Process();
-                    Environment.ExitCode = 0;
                 }
                 catch (Exception ex)
                 {
-                    Environment.ExitCode = 1;
                     _logger.Error(ex.Message, ex);
-                    //Console.WriteLine(ex.Message);
-                    //Console.Read();
-                }                
+                    Console.WriteLine(ex.Message);
+                    Console.Read();
+                }
             }
             else if (args[0] == "manual")
             {
@@ -160,8 +158,12 @@ namespace CalculateInterestConsole
                     conn.Open();
                     using (var command = new SqlCommand(@"SELECT [RefId],[SavingAccType],[CustomerId],[CustomerName],[Currency]
                                                         ,[Principal],[StartDate],[EndDate],[AZRolloverPR],[InterestRate]
-                                                        ,[TermInterestAmt],[NonInterestRate],[NonTermInterestAmt], LastCalcInterstDate
-                                                    FROM [dbo].[BSAVING_ACC_INTEREST] 
+                                                        ,[TermInterestAmt],[NonInterestRate],[NonTermInterestAmt], LastCalcInterstDate,
+		                                                (Select top 1 * from (Select p.[AZWorkingAccount] from BSAVING_ACC_PERIODIC p where p.RefId = i.[RefId]
+							                                                UNION 
+							                                                Select a.[AZWorkingAccount] from BSAVING_ACC_ARREAR a where a.RefId = i.[RefId] 
+		                                                )as [AZWorkingAccount]) as [AZWorkingAccount]
+                                                    FROM [dbo].[BSAVING_ACC_INTEREST] i
                                                     WHERE (LastCalcInterstDate is null OR DATEDIFF(day, LastCalcInterstDate, @systemDate) > 0)
                                                         AND [RefId] IN  (SELECT [RefId] FROM BSAVING_ACC_ARREAR WHERE CloseStatus is null OR CloseStatus != 'AUT' 
 		                                                                        UNION SELECT [RefId] FROM BSAVING_ACC_PERIODIC WHERE CloseStatus is null OR CloseStatus != 'AUT' )", conn))
@@ -190,6 +192,7 @@ namespace CalculateInterestConsole
                                     row["LastCalcInterstDate"] = SystemDate;
 
                                     UpdateMaturityDate((string)row["RefId"], (string)row["SavingAccType"], conn);
+                                    UpdateInterestedAmountToWorkIngAcc((string)row["AZWorkingAccount"], interestAmt + "", conn);
                                 }
                                 else if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) > 0)
                                 {
@@ -197,8 +200,9 @@ namespace CalculateInterestConsole
                                     row["NonTermInterestAmt"] = interestAmt;
                                     row["LastCalcInterstDate"] = SystemDate;
                                 }
-                            }
 
+                                
+                            }
                             var commandBuilder = new SqlCommandBuilder(adapter);
                             adapter.Update(savingAccInterestTb);
                         }
@@ -206,6 +210,16 @@ namespace CalculateInterestConsole
                 }
                 scope.Complete();
             }
+        }
+
+        private static void UpdateInterestedAmountToWorkIngAcc(string workingAccId, string amount, SqlConnection connection)
+        {
+            var command = new SqlCommand();
+            command.Connection = connection;
+            command.CommandText = "Update BOPENACCOUNT set ActualBallance = ActualBallance + @interestedAmount, ClearedBallance = ClearedBallance + @interestedAmount, WorkingAmount = WorkingAmount + @interestedAmount where AccountCode = @AccoutId";
+            command.Parameters.AddWithValue("interestedAmount", amount);
+            command.Parameters.AddWithValue("AccoutId", workingAccId);
+            command.ExecuteNonQuery();
         }
 
         private static void UpdateMaturityDate(string refId, string savingAccType, SqlConnection connection)
