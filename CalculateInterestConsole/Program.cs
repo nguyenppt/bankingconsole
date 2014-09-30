@@ -186,7 +186,7 @@ namespace CalculateInterestConsole
                                 if (DateAndTime.DateDiff(DateInterval.Day, SystemDate, (DateTime)row["EndDate"]) <= 0)
                                 {
                                     //Trung ngay dao han
-                                    interestAmt = (decimal)row["InterestRate"] / 100 / 360 * DateAndTime.DateDiff(DateInterval.Day, (DateTime)row["StartDate"], (DateTime)row["EndDate"]) * principal;
+                                    interestAmt = (decimal)row["InterestRate"] / 1200 * DateAndTime.DateDiff(DateInterval.Month, (DateTime)row["StartDate"], (DateTime)row["EndDate"]) * principal;
                                     row["TermInterestAmt"] = interestAmt;
                                     row["NonTermInterestAmt"] = 0;
                                     row["LastCalcInterstDate"] = SystemDate;
