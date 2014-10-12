@@ -134,6 +134,8 @@ namespace CalculateInterestConsole
 
         private static void CalculatePaymnet()
         {
+
+            _logger.Info("CalculatePaymnet_" + SystemDate);
             StoreProRepository facade = new StoreProRepository();
             facade.StoreProcessor().B_Normal_Loan_Process_Payment(SystemDate);
 
