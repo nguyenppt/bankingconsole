@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using System.Transactions;
+using BankProject.DBRespository;
 
 namespace CalculateInterestConsole
 {
@@ -120,12 +121,22 @@ namespace CalculateInterestConsole
         {
             //Console.WriteLine("Get non term interest.");
             //GetNonInterestRate();
+
             Console.WriteLine("Prepare data for arrear");
             PrepareDataForArrear();
             Console.WriteLine("Prepare data for arrear");
             PrepareDataForPeriodic();
             Console.WriteLine("Calculate daily interest");
             CalculateInterest();
+            Console.WriteLine("Calculate daily Loan Payment");
+            CalculatePaymnet();
+        }
+
+        private static void CalculatePaymnet()
+        {
+            StoreProRepository facade = new StoreProRepository();
+            facade.StoreProcessor().B_Normal_Loan_Process_Payment(SystemDate);
+
         }
 
         //private static void GetNonInterestRate()
