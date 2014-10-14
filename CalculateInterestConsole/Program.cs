@@ -128,8 +128,8 @@ namespace CalculateInterestConsole
             PrepareDataForPeriodic();
             Console.WriteLine("Calculate daily interest");
             CalculateInterest();
-            Console.WriteLine("Calculate daily Loan Payment");
-            CalculatePaymnet();
+            //Console.WriteLine("Calculate daily Loan Payment");
+            //CalculatePaymnet();
         }
 
         private static void CalculatePaymnet()
