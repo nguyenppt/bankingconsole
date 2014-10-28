@@ -8,7 +8,7 @@ using CalculateInterestConsole.DBContext;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 
-namespace BankProject.DBRespository
+namespace CalculateInterestConsole.DBRespository
 {
 
     /******************************************************************************
@@ -35,6 +35,7 @@ namespace BankProject.DBRespository
     {
         protected System.Data.Entity.DbContext context;
         protected DbSet<TEntity> dbSet;
+        
 
         protected BaseRepository()
         {
@@ -47,7 +48,8 @@ namespace BankProject.DBRespository
         {
             try
             {
-                context.SaveChanges();
+                int i = context.SaveChanges();
+                
             }
             catch (DbEntityValidationException dbEx)
             {

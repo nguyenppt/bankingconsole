@@ -5,7 +5,30 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="VietVictoryCoreBankingEntity.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityContainer Name="VietVictoryCoreBankingEntityStoreContainer" />
+        <EntityContainer Name="VietVictoryCoreBankingEntityStoreContainer">
+          <EntitySet Name="B_BATCH_MAINTENANCE" EntityType="VietVictoryCoreBankingEntity.Store.B_BATCH_MAINTENANCE" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="B_CheckBatchRunning" EntityType="VietVictoryCoreBankingEntity.Store.B_CheckBatchRunning" store:Type="Tables" Schema="dbo" />
+        </EntityContainer>
+        <EntityType Name="B_BATCH_MAINTENANCE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="BatchName" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="NoOfRuns" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="B_CheckBatchRunning">
+          <Key>
+            <PropertyRef Name="BatchName" />
+          </Key>
+          <Property Name="BatchName" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="RunningFlag" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="NoOfRuns" Type="int" />
+        </EntityType>
         <Function Name="B_Normal_Loan_Process_Payment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="EndDateProcess" Type="datetime" Mode="In" />
         </Function>
@@ -15,9 +38,31 @@
       <Schema Namespace="VietVictoryCoreBankingEntity" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="VietVictoryCoreBankingEntities" p1:LazyLoadingEnabled="true" >
           <FunctionImport Name="B_Normal_Loan_Process_Payment" ReturnType="Collection(String)">
-            <Parameter Name="EndDateProcess" Mode="In" Type="DateTime" />
+          <Parameter Name="EndDateProcess" Mode="In" Type="DateTime" />
           </FunctionImport>
+          <EntitySet Name="B_BATCH_MAINTENANCE" EntityType="VietVictoryCoreBankingEntity.B_BATCH_MAINTENANCE" />
+          <EntitySet Name="B_CheckBatchRunning" EntityType="VietVictoryCoreBankingEntity.B_CheckBatchRunning" />
         </EntityContainer>
+        <EntityType Name="B_BATCH_MAINTENANCE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="BatchName" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="StartDate" Precision="3" />
+          <Property Type="DateTime" Name="EndDate" Precision="3" />
+          <Property Type="Int32" Name="NoOfRuns" />
+          <Property Type="String" Name="Status" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="B_CheckBatchRunning">
+          <Key>
+            <PropertyRef Name="BatchName" />
+          </Key>
+          <Property Type="String" Name="BatchName" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="RunningFlag" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="UpdatedDate" Precision="3" />
+          <Property Type="Int32" Name="NoOfRuns" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -25,6 +70,28 @@
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="VietVictoryCoreBankingEntityStoreContainer" CdmEntityContainer="VietVictoryCoreBankingEntities" >
           <FunctionImportMapping FunctionImportName="B_Normal_Loan_Process_Payment" FunctionName="VietVictoryCoreBankingEntity.Store.B_Normal_Loan_Process_Payment" />
+          <EntitySetMapping Name="B_BATCH_MAINTENANCE">
+            <EntityTypeMapping TypeName="VietVictoryCoreBankingEntity.B_BATCH_MAINTENANCE">
+              <MappingFragment StoreEntitySet="B_BATCH_MAINTENANCE">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="NoOfRuns" ColumnName="NoOfRuns" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="B_CheckBatchRunning">
+            <EntityTypeMapping TypeName="VietVictoryCoreBankingEntity.B_CheckBatchRunning">
+              <MappingFragment StoreEntitySet="B_CheckBatchRunning">
+                <ScalarProperty Name="NoOfRuns" ColumnName="NoOfRuns" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="RunningFlag" ColumnName="RunningFlag" />
+                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -4,7 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cb5602e0c30e42c399ce730cd757dde2" Name="Diagram1" />
+      <Diagram DiagramId="cb5602e0c30e42c399ce730cd757dde2" Name="Diagram1" >
+        <EntityTypeShape EntityType="VietVictoryCoreBankingEntity.B_BATCH_MAINTENANCE" Width="1.5" PointX="0.007410245019667896" PointY="17.889237412199954" />
+        <EntityTypeShape EntityType="VietVictoryCoreBankingEntity.B_CheckBatchRunning" Width="1.5" PointX="3" PointY="0.625" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

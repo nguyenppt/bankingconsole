@@ -28,6 +28,8 @@ namespace CalculateInterestConsole.DBContext
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<B_BATCH_MAINTENANCE> B_BATCH_MAINTENANCE { get; set; }
+        public DbSet<B_CheckBatchRunning> B_CheckBatchRunning { get; set; }
     
         public virtual ObjectResult<string> B_Normal_Loan_Process_Payment(Nullable<System.DateTime> endDateProcess)
         {

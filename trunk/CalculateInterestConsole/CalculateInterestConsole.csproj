@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBContext\B_BATCH_MAINTENANCE.cs">
+      <DependentUpon>EntityDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext\B_CheckBatchRunning.cs">
+      <DependentUpon>EntityDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DBContext\EntityDataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -71,6 +77,8 @@
       <DependentUpon>EntityDataModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="DBRespository\BaseRepository.cs" />
+    <Compile Include="DBRespository\BatchMaintenanceRepository.cs" />
+    <Compile Include="DBRespository\CheckBatchRunningRepository.cs" />
     <Compile Include="DBRespository\DBContextBase.cs" />
     <Compile Include="DBRespository\IRepositoryDB.cs" />
     <Compile Include="DBRespository\StoreProRepository.cs" />
