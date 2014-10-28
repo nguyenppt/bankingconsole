@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using System.Transactions;
-using BankProject.DBRespository;
+using CalculateInterestConsole.DBRespository;
+using CalculateInterestConsole.DBContext;
 
 namespace CalculateInterestConsole
 {
@@ -48,6 +49,9 @@ namespace CalculateInterestConsole
                                                                     LEFT JOIN [BSAVING_ACC_INTEREST] i
 	                                                                    ON a.RefId = i.RefId  AND a.AZPreMaturityDate = i.[StartDate] AND a.AZMaturityDate = i.[EndDate]
                                                                     WHERE Status = 'AUT' AND (CloseStatus is null OR CloseStatus != 'AUT') AND i.RefId is null AND a.AZPreMaturityDate is not NULL AND a.AZMaturityDate is not NULL";
+
+        private static String BATCH_NAME = "BATCH_SAVING_ACCOUNT";
+        private static bool isProcessing = false;
 
         public static DateTime SystemDate
         {
@@ -122,14 +126,113 @@ namespace CalculateInterestConsole
             //Console.WriteLine("Get non term interest.");
             //GetNonInterestRate();
 
-            Console.WriteLine("Prepare data for arrear");
-            PrepareDataForArrear();
-            Console.WriteLine("Prepare data for arrear");
-            PrepareDataForPeriodic();
-            Console.WriteLine("Calculate daily interest");
-            CalculateInterest();
-            //Console.WriteLine("Calculate daily Loan Payment");
-            //CalculatePaymnet();
+           
+
+            if (checkProcessing())
+            {
+                _logger.Info("Calling while batch is processing so ignore!!! [" + DateTime.Now + "]" );
+            }
+            else
+            {
+                B_BATCH_MAINTENANCE entry = new B_BATCH_MAINTENANCE();
+                processStart(ref entry);
+
+                Console.WriteLine("Prepare data for arrear");
+                PrepareDataForArrear();
+                Console.WriteLine("Prepare data for arrear");
+                PrepareDataForPeriodic();
+                Console.WriteLine("Calculate daily interest");
+                CalculateInterest();
+                //Console.WriteLine("Calculate daily Loan Payment");
+                //CalculatePaymnet();
+
+                processEnd(ref entry);
+
+            }
+        }
+
+        private static bool checkProcessing()
+        {
+            CheckBatchRunningRepository chkFacade = new CheckBatchRunningRepository();
+            B_CheckBatchRunning chkIte = chkFacade.findBatchRunning(BATCH_NAME).FirstOrDefault();
+            if (chkIte != null && chkIte.RunningFlag.Equals("Running"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void processStart(ref B_BATCH_MAINTENANCE entry)
+        {
+            CheckBatchRunningRepository chkFacade = new CheckBatchRunningRepository();
+            B_CheckBatchRunning chkIte = chkFacade.findBatchRunning(BATCH_NAME).FirstOrDefault();
+            B_CheckBatchRunning chkIteOld;
+            if (chkIte == null)
+            {
+                chkIte = new B_CheckBatchRunning();
+                chkIte.BatchName = BATCH_NAME;
+                chkIte.NoOfRuns = 1;
+                chkIte.RunningFlag = "Running";
+                chkIte.UpdatedDate = DateTime.Now;
+                chkFacade.Add(chkIte);
+                chkFacade.Commit();
+
+            }
+            else
+            {
+                chkIteOld = chkFacade.findBatchRunning(BATCH_NAME).FirstOrDefault();
+                chkIte.NoOfRuns = chkIte.NoOfRuns + 1;
+                chkIte.RunningFlag = "Running";
+                chkIte.UpdatedDate = DateTime.Now;
+                chkFacade.Update(chkIteOld, chkIte);
+                chkFacade.Commit();
+            }
+
+
+            BatchMaintenanceRepository facade = new BatchMaintenanceRepository();
+            entry = new B_BATCH_MAINTENANCE();
+            entry.BatchName = BATCH_NAME;
+            entry.StartDate = DateTime.Now;
+            entry.Status = "Running";
+            entry.NoOfRuns = chkIte.NoOfRuns;
+            facade.Add(entry);
+            facade.Commit();
+        }
+
+        private static void processEnd(ref B_BATCH_MAINTENANCE entry)
+        {
+            BatchMaintenanceRepository facade = new BatchMaintenanceRepository();
+            entry.EndDate = DateTime.Now;
+            entry.Status = "Completed";
+            B_BATCH_MAINTENANCE entry2 = facade.GetById(entry.ID);
+
+            facade.Update(entry2, entry);
+            facade.Commit();
+
+
+            CheckBatchRunningRepository chkFacade = new CheckBatchRunningRepository();
+            B_CheckBatchRunning chkIte = chkFacade.findBatchRunning(BATCH_NAME).FirstOrDefault();
+            B_CheckBatchRunning chkIteOld;
+            if (chkIte == null)
+            {
+                chkIte = new B_CheckBatchRunning();
+                chkIte.BatchName = BATCH_NAME;
+                chkIte.NoOfRuns = 1;
+                chkIte.RunningFlag = "Completed";
+                chkIte.UpdatedDate = DateTime.Now;
+                chkFacade.Add(chkIte);
+                chkFacade.Commit();
+            }
+            else
+            {
+                chkIteOld = chkFacade.findBatchRunning(BATCH_NAME).FirstOrDefault();
+                chkIte.RunningFlag = "Completed";
+                chkIte.UpdatedDate = DateTime.Now;
+                chkFacade.Update(chkIteOld, chkIte);
+                chkFacade.Commit();
+            }
+
         }
 
         private static void CalculatePaymnet()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BankProject.DBRespository
+namespace CalculateInterestConsole.DBRespository
 {
     /******************************************************************************
      * Description:
