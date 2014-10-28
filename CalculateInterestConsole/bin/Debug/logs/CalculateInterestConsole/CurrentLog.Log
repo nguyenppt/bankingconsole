@@ -78,3 +78,5 @@ INFO  2014-10-29 00:26:04,945 [11] Program                - - Start calculate in
 INFO  2014-10-29 00:26:06,170 [11] Program                - Completed !
 INFO  2014-10-29 00:26:06,657 [10] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
 INFO  2014-10-29 00:26:08,737 [10] Program                - Completed !
+INFO  2014-10-29 00:43:12,841 [9] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:43:13,791 [9] Program                - Completed !
