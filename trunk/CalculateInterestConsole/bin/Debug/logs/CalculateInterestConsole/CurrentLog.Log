@@ -1,0 +1,80 @@
+ERROR 2014-10-28 23:44:00,168 [9] Program                - Index was outside the bounds of the array.
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at CalculateInterestConsole.Program.Main(String[] args) in f:\Others\OtherProject\VietVistoryBanking\3.Console\CalculateInterestConsole\Program.cs:line 63
+   at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)
+   at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)
+   at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()
+   at System.Threading.ThreadHelper.ThreadStart_Context(Object state)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.ThreadHelper.ThreadStart()
+INFO  2014-10-28 23:44:43,101 [10] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+ERROR 2014-10-28 23:44:44,921 [10] Program                - Login failed for user 'bisolutions_vvcb'.
+System.Data.SqlClient.SqlException (0x80131904): Login failed for user 'bisolutions_vvcb'.
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+   at System.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+   at System.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at System.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at System.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData)
+   at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at CalculateInterestConsole.Program.PrepareDataForArrear() in f:\Others\OtherProject\VietVistoryBanking\3.Console\CalculateInterestConsole\Program.cs:line 313
+   at CalculateInterestConsole.Program.Process() in f:\Others\OtherProject\VietVistoryBanking\3.Console\CalculateInterestConsole\Program.cs:line 137
+   at CalculateInterestConsole.Program.Main(String[] args) in f:\Others\OtherProject\VietVistoryBanking\3.Console\CalculateInterestConsole\Program.cs:line 67
+   at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)
+   at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)
+   at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()
+   at System.Threading.ThreadHelper.ThreadStart_Context(Object state)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.ThreadHelper.ThreadStart()
+ClientConnectionId:a6294b57-ba24-4f2d-a3fa-09d7cc114808
+INFO  2014-10-28 23:45:21,469 [10] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:45:22,470 [10] Program                - Completed !
+INFO  2014-10-28 23:49:24,495 [9] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:50:49,026 [9] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:53:02,851 [10] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:54:45,549 [9] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:55:28,260 [9] Program                - Completed !
+INFO  2014-10-28 23:57:22,145 [9] Program                - - Start calculate interest at Tuesday, October 28, 2014 with mode schedule
+INFO  2014-10-28 23:58:13,350 [9] Program                - Completed !
+INFO  2014-10-29 00:14:15,587 [9] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:14:18,127 [9] Program                - Completed !
+INFO  2014-10-29 00:14:38,733 [11] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:14:39,513 [11] Program                - Completed !
+INFO  2014-10-29 00:15:40,852 [8] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:15:41,932 [8] Program                - Completed !
+INFO  2014-10-29 00:15:58,320 [9] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:16:00,210 [9] Program                - Completed !
+INFO  2014-10-29 00:24:21,555 [8] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:24:23,445 [8] Program                - Completed !
+INFO  2014-10-29 00:24:46,339 [8] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:24:47,979 [8] Program                - Completed !
+INFO  2014-10-29 00:25:32,344 [11] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:25:33,350 [11] Program                - Completed !
+INFO  2014-10-29 00:25:34,190 [10] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:25:35,419 [10] Program                - Completed !
+INFO  2014-10-29 00:25:50,131 [10] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:25:51,131 [10] Program                - Completed !
+INFO  2014-10-29 00:25:51,151 [10] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:25:52,111 [10] Program                - Completed !
+INFO  2014-10-29 00:26:04,945 [11] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:26:06,170 [11] Program                - Completed !
+INFO  2014-10-29 00:26:06,657 [10] Program                - - Start calculate interest at Wednesday, October 29, 2014 with mode schedule
+INFO  2014-10-29 00:26:08,737 [10] Program                - Completed !
